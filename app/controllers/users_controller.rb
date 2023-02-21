@@ -1,4 +1,10 @@
 class UsersController < ApplicationController
+  def remove_cookies
+    reset_session
+
+    redirect_to("/", { :notice => "See you later!" })
+  end
+
   def new_registration_form
     render({ :template => "/users/signup_form.html.erb" })
   end
@@ -20,16 +26,17 @@ class UsersController < ApplicationController
     user = User.new
     user.username = params.fetch("input_username")
     user.password = params.fetch("input_password")
-    user.password_confirmation = params.feth("input_password_confirmation")
+    user.password_confirmation = params.fetch("input_password_confirmation")
 
     user.username = params.fetch("input_username")
 
     save_status = user.save
 
     if save_status == true
-      reidrect_to("users/#{user.username}", {:notice => "Welcome, " + user.username + "!"})
+      session.store(:user_id, user.id)
+      redirect_to("/users/#{user.username}", { :notice => "Welcome, " + user.username + "!" })
     else
-      redirect_to("/user_sign_up")
+      redirect_to("/user_sign_up", { :alert => user.errors.full_messages.to_sentence })
     end
   end
 

@@ -21,8 +21,26 @@
         <li>
           <a href = "/user_sign_up"> sign up </a>
         </li>
+        <li>
+          <%= session.fetch(:user_id)%>
+        </li>
+        <li>
+          <a href = "/user_sign_out">Sign out </a>
+        </li>
       </ul>
     </nav>
+
+<% if notice.present? %>
+  <div style = "border: thin green solid; color: green">
+    <%= notice%>
+  </div>
+<% end %>
+
+<% if alert.present? %>
+  <div style = "border: thin red solid; color: red">
+    <%= alert%>
+  </div>
+<%end %>
     <%= yield %>
 
     
