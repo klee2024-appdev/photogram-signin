@@ -1,8 +1,43 @@
 class UsersController < ApplicationController
+  def authenticate
+    # get the username from params
+    # get get the password from params
+    un = params.fetch("input_username")
+    pw = params.fetch("input_password")
+
+    # look up the record from the db matching username
+    # if there's no record, redirect back to sign in form
+    user = User.where({ :username => un }).at(0)
+
+    if user == nil
+      redirect_to("/user_sign_in", { :alert => "username not found" })
+    else
+      #if there is a record, check to see if password matches
+      if user.authenticate(pw)
+        session.store(:user_id, user.id)
+        redirect_to("/", { :notice => "welcome back, " + user.username + "!" })
+        #if not, redirect back to the sign in form
+      else
+        redirect_to("/user_sign_in", { :alert => "incorrect password" })
+      end
+    end
+
+    #if there is a record, check to see if password matches
+    # if not, redirect back to the sign in form
+
+    # if so, set the cookie
+    # redirect to home page
+
+  end
+
   def remove_cookies
     reset_session
 
     redirect_to("/", { :notice => "See you later!" })
+  end
+
+  def new_session_form
+    render({ :template => "/users/signin_form.html.erb" })
   end
 
   def new_registration_form
